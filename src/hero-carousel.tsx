@@ -47,7 +47,7 @@ function PhoneCarousel() {
         items={items}
         preset="orbit"
         intro="spin"
-        cardWidth={224}
+        cardWidth={272}
         aspectRatio={0.51}
         gap={18}
         tilt={-4}
@@ -85,34 +85,20 @@ function StudioHero() {
     <div className="studio-hero">
       <div className="studio-hero__grid-bg" aria-hidden="true" />
       <div className="container-x studio-hero__layout">
-        <section className="studio-hero__message studio-hero__message--left" aria-labelledby="studio-hero-title">
+        <section className="studio-hero__message" aria-labelledby="studio-hero-title">
           <p className="studio-hero__eyebrow"><i /> Estudio de contenido vertical</p>
           <h1 id="studio-hero-title">Videos que hacen que tu marca se quede en la cabeza.</h1>
           <p className="studio-hero__copy">
             Ideamos, producimos y editamos contenido que detiene el scroll y transforma atención en ventas.
           </p>
-          <div className="studio-hero__actions">
-            <a className="studio-hero__button studio-hero__button--solid" href="/contacto">Impulsar mi marca <span aria-hidden="true">↗</span></a>
-            <a className="studio-hero__button studio-hero__button--text" href="/trabajos">Ver trabajos <span aria-hidden="true">↗</span></a>
-          </div>
+          <p className="studio-hero__services">Estrategia · Producción · Edición · Distribución</p>
         </section>
 
         <div className="studio-hero__showcase">
           <p className="studio-hero__showcase-label">Casos que mueven la aguja</p>
           <PhoneCarousel />
         </div>
-
-        <aside className="studio-hero__message studio-hero__message--right" aria-label="Propuesta de valor">
-          <p className="studio-hero__index">(01 — 03)</p>
-          <p className="studio-hero__statement">Tu próxima campaña no necesita más contenido.</p>
-          <p className="studio-hero__statement studio-hero__statement--strong">Necesita piezas que generen conversación.</p>
-          <div className="studio-hero__proof">
-            <strong>Desde la idea hasta el feed.</strong>
-            <span>Sin contratos de 12 meses</span>
-          </div>
-        </aside>
       </div>
-      <p className="studio-hero__scroll-note"><span /> Deslizá o arrastrá para descubrir</p>
     </div>
   );
 }
