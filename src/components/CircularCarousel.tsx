@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import './CircularCarousel.css';
 
 export interface CircularCarouselItem {
   src: string;
@@ -139,12 +140,6 @@ interface Leaving {
   items: CircularCarouselItem[];
   delays: number[];
 }
-
-const STYLE = `
-@keyframes circular-carousel-title { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
-@keyframes circular-carousel-leave { from { opacity: 1; } to { opacity: 0; } }
-@keyframes circular-carousel-reveal { from { opacity: 0; } to { opacity: 1; } }
-`;
 
 const MASKS: Partial<Record<CircularCarouselPreset, string>> = {
   wheel: 'linear-gradient(to bottom, transparent, #000000 18%, 82%, transparent)',
@@ -294,14 +289,14 @@ const rotateY = (p: Vec3, degrees: number): Vec3 => {
 };
 
 const Digits = ({ value }: { value: number }) => (
-  <span className="inline-flex">
+  <span className="circular-carousel__digits inline-flex">
     {String(value)
       .padStart(2, '0')
       .split('')
       .map((digit, index) => (
-        <span key={index} className="inline-block h-[1em] overflow-hidden">
+        <span key={index} className="circular-carousel__digit inline-block h-[1em] overflow-hidden">
           <span
-            className="flex flex-col transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
+            className="circular-carousel__reel flex flex-col transition-transform duration-[600ms] ease-[cubic-bezier(0.22,1,0.36,1)] motion-reduce:transition-none"
             style={{ transform: `translateY(${-Number(digit) * 10}%)` }}
           >
             {'0123456789'.split('').map(n => (
@@ -1016,16 +1011,16 @@ const CircularCarousel = ({
     return (
       <div
         key={`${back ? 'b' : 'f'}${tile.index}`}
-        className="cc-tile absolute [-webkit-backface-visibility:hidden] [backface-visibility:hidden] [outline:1px_solid_transparent]"
+        className="circular-carousel__tile cc-tile absolute [-webkit-backface-visibility:hidden] [backface-visibility:hidden] [outline:1px_solid_transparent]"
         style={{ ...box, transform: tile.move + (back ? flip : '') }}
         aria-hidden="true"
       >
         <div
-          className="cc-frame absolute left-0 top-0 w-full overflow-hidden"
+          className="circular-carousel__frame cc-frame absolute left-0 top-0 w-full overflow-hidden"
           style={{ height: axis === 'x' ? size : cardH, borderRadius: frameRadius }}
         >
           <img
-            className="cc-photo pointer-events-none absolute block max-w-none select-none object-cover [-webkit-user-drag:none]"
+            className="circular-carousel__photo cc-photo pointer-events-none absolute block max-w-none select-none object-cover [-webkit-user-drag:none]"
             src={item.src}
             alt=""
             draggable={false}
@@ -1035,7 +1030,7 @@ const CircularCarousel = ({
           {gone && (
             <img
               key={`leaving-${leaving.id}`}
-              className="pointer-events-none absolute block max-w-none select-none object-cover [-webkit-user-drag:none] animate-[circular-carousel-leave_700ms_cubic-bezier(0.33,1,0.68,1)_both]"
+              className="circular-carousel__photo circular-carousel__photo--leaving pointer-events-none absolute block max-w-none select-none object-cover [-webkit-user-drag:none]"
               src={gone.src}
               alt=""
               draggable={false}
@@ -1043,8 +1038,8 @@ const CircularCarousel = ({
               style={{ ...photoStyle, animationDelay: `${Math.round(leaving.delays[index])}ms` }}
             />
           )}
-          {back && <div className="pointer-events-none absolute inset-0 bg-black opacity-[var(--cc-inner)]" />}
-          <div className="pointer-events-none absolute inset-0 bg-[var(--cc-fade)] opacity-[var(--cc-depth,0)]" />
+          {back && <div className="circular-carousel__inner pointer-events-none absolute inset-0" />}
+          <div className="circular-carousel__shade pointer-events-none absolute inset-0" />
         </div>
       </div>
     );
@@ -1053,7 +1048,7 @@ const CircularCarousel = ({
   return (
     <div
       ref={rootRef}
-      className={`cc-root group/cc relative h-full w-full touch-pan-y select-none overflow-hidden outline-none [-webkit-tap-highlight-color:transparent] focus-visible:shadow-[inset_0_0_0_2px_rgba(128,128,140,0.55)] data-[axis=x]:touch-pan-x data-[draggable]:cursor-grab data-[dragging]:cursor-grabbing ${className}`.trim()}
+      className={`circular-carousel cc-root group/cc relative h-full w-full touch-pan-y select-none overflow-hidden outline-none [-webkit-tap-highlight-color:transparent] focus-visible:shadow-[inset_0_0_0_2px_rgba(128,128,140,0.55)] data-[axis=x]:touch-pan-x data-[draggable]:cursor-grab data-[dragging]:cursor-grabbing ${className}`.trim()}
       style={
         {
           ...style,
@@ -1081,22 +1076,22 @@ const CircularCarousel = ({
       onKeyDown={handleKeyDown}
     >
       <div
-        className="cc-view absolute inset-0"
+        className="circular-carousel__view cc-view absolute inset-0"
         style={MASKS[shape] ? { maskImage: MASKS[shape], WebkitMaskImage: MASKS[shape] } : undefined}
       >
         <div
           ref={stageRef}
-          className="cc-stage absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-[450ms] ease-[ease] group-data-[ready]/cc:opacity-100 motion-reduce:transition-none"
+          className="circular-carousel__stage cc-stage absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-[450ms] ease-[ease] group-data-[ready]/cc:opacity-100 motion-reduce:transition-none"
         >
-          <div ref={cameraRef} className="cc-camera relative h-0 w-0 [transform-style:preserve-3d]">
-            <div ref={ringRef} className="cc-ring absolute left-0 top-0 h-0 w-0 [transform-style:preserve-3d]">
+          <div ref={cameraRef} className="circular-carousel__camera cc-camera relative h-0 w-0 [transform-style:preserve-3d]">
+            <div ref={ringRef} className="circular-carousel__ring cc-ring absolute left-0 top-0 h-0 w-0 [transform-style:preserve-3d]">
               {list.map((item, index) => (
                 <div
                   key={index}
                   ref={element => {
                     cardRefs.current[index] = element;
                   }}
-                  className="cc-card absolute left-0 top-0 h-0 w-0 [transform-style:preserve-3d]"
+                  className="circular-carousel__card cc-card absolute left-0 top-0 h-0 w-0 [transform-style:preserve-3d]"
                   data-cc-index={index}
                   role="group"
                   aria-roledescription="slide"
@@ -1112,25 +1107,24 @@ const CircularCarousel = ({
       </div>
       {captions && current && (
         <div
-          className="cc-caption pointer-events-none absolute inset-x-0 bottom-[22px] flex flex-col items-center gap-1.5 px-4 text-center animate-[circular-carousel-reveal_900ms_ease_both] motion-reduce:animate-none"
+          className="circular-carousel__caption cc-caption pointer-events-none absolute inset-x-0 bottom-[22px] flex flex-col items-center gap-1.5 px-4 text-center motion-reduce:animate-none"
           aria-hidden="true"
         >
           <span
             key={active}
-            className="flex max-w-full flex-col items-center text-[15px] font-medium leading-[1.35] animate-[circular-carousel-title_520ms_cubic-bezier(0.22,1,0.36,1)] motion-reduce:animate-none"
+            className="circular-carousel__title flex max-w-full flex-col items-center text-[15px] font-medium leading-[1.35] motion-reduce:animate-none"
           >
             {current.title || current.alt}
-            {current.subtitle && <span className="font-normal opacity-60">{current.subtitle}</span>}
+            {current.subtitle && <span className="circular-carousel__subtitle font-normal opacity-60">{current.subtitle}</span>}
           </span>
-          <span className="inline-flex items-center gap-[3px] text-[12px] leading-none tabular-nums opacity-50">
+          <span className="circular-carousel__count inline-flex items-center gap-[3px] text-[12px] leading-none tabular-nums opacity-50">
             <Digits value={active + 1} />
-            <span className="opacity-60">/</span>
+            <span className="circular-carousel__slash opacity-60">/</span>
             <span>{String(count).padStart(2, '0')}</span>
           </span>
         </div>
       )}
-      <style>{STYLE}</style>
-      <div className="sr-only" aria-live="polite" aria-atomic="true">
+      <div className="circular-carousel__live sr-only" aria-live="polite" aria-atomic="true">
         {`${label}, ${active + 1} of ${count}`}
       </div>
     </div>
