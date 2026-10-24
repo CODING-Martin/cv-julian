@@ -133,7 +133,7 @@ function GooeyNavigation() {
         timeVariance={300}
         gooeyness={0.55}
         wobble={0.55}
-        hoverEffect={true}
+        hoverEffect={false}
         style={{ '--gn-ink': '#101010', '--gn-muted': 'rgba(16, 16, 16, 0.56)' } as CSSProperties}
         onChange={(index: number, item: { label: string }) => console.log(index, item.label)}
         className="site-gooey-nav"
@@ -201,12 +201,41 @@ function mountGooeyNavigation() {
   return true;
 }
 
+function compactFooter() {
+  let changed = false;
+
+  document.querySelectorAll<HTMLElement>('footer').forEach(footer => {
+    if (footer.dataset.compactFooter) return;
+
+    footer.dataset.compactFooter = 'true';
+
+    const main = footer.querySelector<HTMLElement>('.container-x.grid');
+    if (main) main.dataset.footerMain = 'true';
+
+    const giantWordmark = Array.from(
+      footer.querySelectorAll<HTMLElement>('[aria-hidden="true"]')
+    ).find(element => {
+      const text = element.textContent?.replace(/\s+/g, '').toUpperCase();
+      return text === 'NUEVE®' && element.className.includes('19.5vw');
+    });
+
+    const wordmarkBlock = giantWordmark?.parentElement?.parentElement;
+    if (wordmarkBlock) wordmarkBlock.dataset.footerWordmark = 'true';
+
+    changed = true;
+  });
+
+  return changed;
+}
+
 const observer = new MutationObserver(() => {
   mountStudioHero();
   mountCarousel();
   mountGooeyNavigation();
+  compactFooter();
 });
 observer.observe(document.documentElement, { childList: true, subtree: true });
 mountStudioHero();
 mountCarousel();
 mountGooeyNavigation();
+compactFooter();
