@@ -47,7 +47,7 @@ function PhoneCarousel() {
         items={items}
         preset="orbit"
         intro="spin"
-        cardWidth={166}
+        cardWidth={224}
         aspectRatio={0.51}
         gap={18}
         tilt={-4}
@@ -64,7 +64,7 @@ function PhoneCarousel() {
         stretch={0.08}
         depthFade={0.42}
         fadeColor="#ffffff"
-        innerShade={0.28}
+        innerShade={0.16}
         cornerRadius={32}
         captions
       />
@@ -76,6 +76,43 @@ function PhoneCarousel() {
         <i />
         <span>Arrastrá para explorar</span>
       </div>
+    </div>
+  );
+}
+
+function StudioHero() {
+  return (
+    <div className="studio-hero">
+      <div className="studio-hero__grid-bg" aria-hidden="true" />
+      <div className="container-x studio-hero__layout">
+        <section className="studio-hero__message studio-hero__message--left" aria-labelledby="studio-hero-title">
+          <p className="studio-hero__eyebrow"><i /> Estudio de contenido vertical</p>
+          <h1 id="studio-hero-title">Videos que hacen que tu marca se quede en la cabeza.</h1>
+          <p className="studio-hero__copy">
+            Ideamos, producimos y editamos contenido que detiene el scroll y transforma atención en ventas.
+          </p>
+          <div className="studio-hero__actions">
+            <a className="studio-hero__button studio-hero__button--solid" href="/contacto">Impulsar mi marca <span aria-hidden="true">↗</span></a>
+            <a className="studio-hero__button studio-hero__button--text" href="/trabajos">Ver trabajos <span aria-hidden="true">↗</span></a>
+          </div>
+        </section>
+
+        <div className="studio-hero__showcase">
+          <p className="studio-hero__showcase-label">Casos que mueven la aguja</p>
+          <PhoneCarousel />
+        </div>
+
+        <aside className="studio-hero__message studio-hero__message--right" aria-label="Propuesta de valor">
+          <p className="studio-hero__index">(01 — 03)</p>
+          <p className="studio-hero__statement">Tu próxima campaña no necesita más contenido.</p>
+          <p className="studio-hero__statement studio-hero__statement--strong">Necesita piezas que generen conversación.</p>
+          <div className="studio-hero__proof">
+            <strong>Desde la idea hasta el feed.</strong>
+            <span>Sin contratos de 12 meses</span>
+          </div>
+        </aside>
+      </div>
+      <p className="studio-hero__scroll-note"><span /> Deslizá o arrastrá para descubrir</p>
     </div>
   );
 }
@@ -145,6 +182,23 @@ function mountCarousel() {
   return true;
 }
 
+function mountStudioHero() {
+  if (window.location.pathname !== '/' || !document.querySelector('[aria-label="Métricas de impacto"]')) return false;
+
+  const headline = Array.from(document.querySelectorAll('h1')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').toUpperCase().includes('TRANSFORMAMOS')
+  );
+  const originalHero = headline?.closest<HTMLElement>('section');
+
+  if (!originalHero || originalHero.dataset.studioHeroMounted) return false;
+
+  originalHero.dataset.studioHeroMounted = 'true';
+  originalHero.classList.add('studio-hero-section');
+  originalHero.replaceChildren();
+  createClientRoot(originalHero).render(<StudioHero />);
+  return true;
+}
+
 function mountGooeyNavigation() {
   const originalNavigation = document.querySelector<HTMLElement>('[aria-label="Navegación principal"]');
   const header = originalNavigation?.parentElement;
@@ -162,9 +216,11 @@ function mountGooeyNavigation() {
 }
 
 const observer = new MutationObserver(() => {
+  mountStudioHero();
   mountCarousel();
   mountGooeyNavigation();
 });
 observer.observe(document.documentElement, { childList: true, subtree: true });
+mountStudioHero();
 mountCarousel();
 mountGooeyNavigation();
