@@ -757,8 +757,14 @@ const GooeyNav = ({
         className: 'gooey-nav__link',
         'aria-current': index === current ? 'page' : undefined,
         onClick: event => {
-          if (!item.href || item.href === '#') event.preventDefault();
+          event.preventDefault();
+          if (index === current) return;
           select(index);
+          if (item.href && item.href !== '#') {
+            window.setTimeout(() => {
+              window.location.assign(item.href);
+            }, Math.max(0, settingsRef.current.animationTime));
+          }
         }
       };
       return (

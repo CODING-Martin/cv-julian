@@ -1,4 +1,4 @@
-import { Component, type ReactNode } from 'react';
+import { Component, type CSSProperties, type ReactNode } from 'react';
 import { createRoot as createClientRoot } from 'react-dom/client';
 import CircularCarousel, { type CircularCarouselItem } from './components/CircularCarousel';
 import GooeyNav from './components/GooeyNav';
@@ -96,19 +96,23 @@ function GooeyNavigation() {
   return (
     <GooeyErrorBoundary>
       <GooeyNav
-      items={navigationItems}
-      initialActiveIndex={activeIndex}
-      theme="dark"
-      size="md"
-      frame={true}
-      particleCount={15}
-      spread={62}
-      animationTime={450}
-      timeVariance={300}
-      gooeyness={0.55}
-      wobble={0.55}
-      hoverEffect={true}
-      onChange={(index: number, item: { label: string }) => console.log(index, item.label)}
+        items={navigationItems}
+        initialActiveIndex={activeIndex}
+        theme="dark"
+        color="#090909"
+        activeTextColor="#ffffff"
+        colors={['#090909']}
+        size="md"
+        frame={false}
+        particleCount={15}
+        spread={62}
+        animationTime={450}
+        timeVariance={300}
+        gooeyness={0.55}
+        wobble={0.55}
+        hoverEffect={true}
+        style={{ '--gn-ink': '#101010', '--gn-muted': 'rgba(16, 16, 16, 0.56)' } as CSSProperties}
+        onChange={(index: number, item: { label: string }) => console.log(index, item.label)}
         className="site-gooey-nav"
       />
     </GooeyErrorBoundary>

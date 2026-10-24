@@ -235,8 +235,8 @@
   font-family: 'Inter Tight', Arial, sans-serif;
 }
 
-.site-gooey-nav.gooey-nav--framed {
-  background: rgba(20, 20, 22, 0.96) !important;
+.site-gooey-nav .gooey-nav__link:focus-visible {
+  outline: none;
 }
 
 .site-gooey-nav .gooey-nav__link {
