@@ -222,8 +222,30 @@
   box-shadow: 0 0 0 4px rgba(8, 8, 8, 0.11);
 }
 
+/* React Bits Gooey Nav takes the place of the desktop route links. */
+[data-gooey-nav-host] {
+  display: block !important;
+  min-width: 360px;
+  visibility: visible !important;
+}
+
+.site-gooey-nav {
+  display: inline-flex !important;
+  z-index: 2;
+  font-family: 'Inter Tight', Arial, sans-serif;
+}
+
+.site-gooey-nav.gooey-nav--framed {
+  background: rgba(20, 20, 22, 0.96) !important;
+}
+
+.site-gooey-nav .gooey-nav__link {
+  min-height: 40px;
+}
+
 @media (max-width: 639px) {
   .hero-phone-carousel__metric,
   .hero-phone-carousel__status { display: none; }
   .rb-circular-gallery__label { font-size: 0.64rem !important; }
+  .site-gooey-nav { display: none; }
 }

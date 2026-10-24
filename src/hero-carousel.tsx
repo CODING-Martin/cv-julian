@@ -1,5 +1,7 @@
-import { createRoot } from 'react-dom/client';
+import { Component, type ReactNode } from 'react';
+import { createRoot as createClientRoot } from 'react-dom/client';
 import CircularCarousel, { type CircularCarouselItem } from './components/CircularCarousel';
+import GooeyNav from './components/GooeyNav';
 import './hero-carousel.css';
 
 const image = (id: string) =>
@@ -78,6 +80,53 @@ function PhoneCarousel() {
   );
 }
 
+const navigationItems = [
+  { label: 'Home', href: '/' },
+  { label: 'Work', href: '/trabajos' },
+  { label: 'About', href: '/clientes' },
+  { label: 'Contact', href: '/contacto' }
+];
+
+function GooeyNavigation() {
+  const activeIndex = Math.max(
+    0,
+    navigationItems.findIndex(item => item.href === window.location.pathname)
+  );
+
+  return (
+    <GooeyErrorBoundary>
+      <GooeyNav
+      items={navigationItems}
+      initialActiveIndex={activeIndex}
+      theme="dark"
+      size="md"
+      frame={true}
+      particleCount={15}
+      spread={62}
+      animationTime={450}
+      timeVariance={300}
+      gooeyness={0.55}
+      wobble={0.55}
+      hoverEffect={true}
+      onChange={(index: number, item: { label: string }) => console.log(index, item.label)}
+        className="site-gooey-nav"
+      />
+    </GooeyErrorBoundary>
+  );
+}
+
+class GooeyErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
+  state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  render() {
+    return this.state.failed ? <span className="site-gooey-nav__fallback">Home · Work · About · Contact</span> : this.props.children;
+  }
+}
+
 function mountCarousel() {
   const marker = Array.from(document.querySelectorAll('span')).find(
     element => element.textContent?.trim() === 'Preview en loop'
@@ -88,10 +137,30 @@ function mountCarousel() {
 
   originalVisual.dataset.reactbitsMounted = 'true';
   originalVisual.replaceChildren();
-  createRoot(originalVisual).render(<PhoneCarousel />);
+  createClientRoot(originalVisual).render(<PhoneCarousel />);
   return true;
 }
 
-const observer = new MutationObserver(() => mountCarousel());
+function mountGooeyNavigation() {
+  const originalNavigation = document.querySelector<HTMLElement>('[aria-label="Navegación principal"]');
+  const header = originalNavigation?.parentElement;
+  if (!originalNavigation || !header) return false;
+
+  let host = header.querySelector<HTMLElement>('[data-gooey-nav-host]');
+  if (host) return false;
+
+  host = document.createElement('div');
+  host.dataset.gooeyNavHost = 'true';
+  originalNavigation.style.display = 'none';
+  originalNavigation.before(host);
+  createClientRoot(host).render(<GooeyNavigation />);
+  return true;
+}
+
+const observer = new MutationObserver(() => {
+  mountCarousel();
+  mountGooeyNavigation();
+});
 observer.observe(document.documentElement, { childList: true, subtree: true });
 mountCarousel();
+mountGooeyNavigation();
