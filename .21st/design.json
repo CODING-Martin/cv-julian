@@ -52,6 +52,10 @@
     {
       "decision": "Reveal the portfolio heading, each portfolio card and the dark contact call-to-action only when they enter the viewport; use one-time staggered entrances driven by IntersectionObserver and CSS transforms.",
       "reason": "Triggering each element at the moment it becomes visible makes the page feel intentional without replaying motion or animating off-screen content; the cards use a restrained fade-up while the editorial headings keep their horizontal entrance, all remaining compositor-friendly and respectful of reduced-motion preferences."
+    },
+    {
+      "decision": "Keep the mobile portfolio rail horizontally swipeable but prohibit vertical scrolling inside it; use opacity-only card reveals on touch layouts and start the contact reveal only after the full portfolio layout is mounted.",
+      "reason": "A transformed card was adding vertical overflow to the nested rail on iPhone, trapping up-and-down gestures over the media. Fixing the rail to one scroll axis preserves native page scrolling, while waiting for stable layout prevents the contact animation from firing off-screen."
     }
   ],
   "evidence": [

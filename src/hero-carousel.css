@@ -6,7 +6,8 @@ body {
 }
 
 /* Removes the unrelated builder badge injected by the original template. */
-#enter-badge {
+#enter-badge,
+#nl-badge-frame {
   display: none !important;
 }
 
@@ -464,6 +465,14 @@ body {
   transform: translate3d(0, 0, 0);
   opacity: 1;
   will-change: auto;
+}
+
+.motion-reveal-section--contact .motion-reveal-item {
+  transform: translate3d(-2.75rem, 0, 0);
+}
+
+.motion-reveal-section--contact.motion-reveal-section--visible .motion-reveal-item {
+  transform: translate3d(0, 0, 0);
 }
 
 .motion-reveal-on-view {
@@ -932,16 +941,22 @@ body {
     margin-right: -2rem;
     padding-right: 2rem;
     overflow-x: auto;
+    overflow-y: hidden;
     overscroll-behavior-x: contain;
+    overscroll-behavior-y: auto;
     scroll-padding-left: 0;
     scroll-snap-type: x mandatory;
     scrollbar-width: none;
-    touch-action: pan-x pan-y;
+    touch-action: auto;
     -webkit-overflow-scrolling: touch;
   }
 
   .portfolio-video-grid::-webkit-scrollbar { display: none; }
   .portfolio-video-card { flex: 0 0 min(42vw, 22rem); scroll-snap-align: start; }
+  .portfolio-video-card.motion-reveal-on-view {
+    transform: none;
+    will-change: opacity;
+  }
   .portfolio-video-section__swipe-hint { display: flex; }
 
   .portfolio-video-dialog__backdrop { padding: 1rem; }

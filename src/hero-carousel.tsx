@@ -850,14 +850,17 @@ function observeRevealSection(
 function setupLightweightSectionReveals() {
   const portfolioSection = document.querySelector<HTMLElement>('.portfolio-video-section');
   const portfolioTitle = portfolioSection?.querySelector<HTMLHeadingElement>('.portfolio-video-section__intro h2');
+  const portfolioCards = portfolioSection?.querySelectorAll<HTMLElement>('.portfolio-video-card');
 
-  if (portfolioSection && portfolioTitle) {
+  if (portfolioSection && portfolioTitle && portfolioCards?.length === videoPortfolioSlots.length) {
     addRevealItem(portfolioTitle, 0);
     observeRevealSection(portfolioSection, 'portfolio', portfolioTitle);
 
-    portfolioSection.querySelectorAll<HTMLElement>('.portfolio-video-card').forEach((card, index) => {
+    portfolioCards.forEach((card, index) => {
       observeRevealItem(card, (index % 3) * 80);
     });
+  } else {
+    return;
   }
 
   const contactTitle = Array.from(document.querySelectorAll<HTMLHeadingElement>('h1, h2')).find(element =>
