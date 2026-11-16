@@ -829,7 +829,7 @@ body {
 
 .portfolio-video-dialog__content h2.portfolio-video-title--long {
   max-width: 100%;
-  font-size: clamp(1.8rem, 8.5vw, 3rem);
+  font-size: clamp(1.55rem, 6.5vw, 2.25rem);
   letter-spacing: -0.07em;
   overflow-wrap: anywhere;
 }

@@ -230,7 +230,7 @@ function getPortfolioTitle(slot: VideoPortfolioSlot) {
 }
 
 function getPortfolioTitleSizeClass(slot: VideoPortfolioSlot) {
-  return getPortfolioTitle(slot).length >= 15 ? 'portfolio-video-title--long' : '';
+  return getPortfolioTitle(slot).length >= 12 ? 'portfolio-video-title--long' : '';
 }
 
 function PlayIcon() {
