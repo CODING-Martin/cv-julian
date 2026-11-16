@@ -228,15 +228,15 @@ const videoPortfolioSlots = [
   },
   {
     number: '09',
-    client: 'Vox Populi',
-    modalTitle: '@VOXPOPULIMZA',
-    category: 'Medio deportivo',
-    title: 'El Superclásico que quedó marcado',
-    description: 'Storytelling deportivo y contenido audiovisual sobre historias del fútbol.',
+    client: 'Ariel Martínez',
+    modalTitle: 'ARIELMARTINEZ.ARQ',
+    category: 'Arquitectura',
+    title: 'Instalaciones que definen una buena obra',
+    description: 'Contenido profesional sobre arquitectura, instalaciones y mantenimiento de una vivienda.',
     role: 'Grabación y edición.',
-    duration: '1:48',
-    src: '/videos/vox-populi-superclasico.mp4',
-    poster: '/posters/vox-populi-superclasico.webp'
+    duration: '0:28',
+    src: '/videos/ariel-martinez-arq.mp4',
+    poster: '/posters/ariel-martinez-arq.webp'
   }
 ] as const;
 
