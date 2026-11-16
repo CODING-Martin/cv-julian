@@ -480,7 +480,7 @@ function VideoPortfolioSection() {
     <div className="container-x portfolio-video-section__inner">
       <header className="portfolio-video-section__header">
         <div className="portfolio-video-section__intro">
-          <h2>Algunos de <em>mis trabajos.</em></h2>
+          <h2><span>Algunos de</span>{' '}<em>mis trabajos.</em></h2>
         </div>
       </header>
 
@@ -529,7 +529,7 @@ function ContactSection() {
     <section className="studio-contact" aria-labelledby="studio-contact-title">
       <div className="container-x studio-contact__inner">
         <p className="studio-contact__eyebrow motion-reveal-item"><i aria-hidden="true" /> Siguiente paso</p>
-        <h2 id="studio-contact-title" className="motion-reveal-item">¿Trabajamos <em>Juntos?</em></h2>
+        <h2 id="studio-contact-title" className="motion-reveal-item"><span>¿Trabajamos</span>{' '}<em>Juntos?</em></h2>
         <p className="studio-contact__copy motion-reveal-item">
           Para consultas, proyectos o colaboraciones, contactame directamente.
         </p>
