@@ -3,6 +3,8 @@ import './CircularCarousel.css';
 
 export interface CircularCarouselItem {
   src: string;
+  media?: 'image' | 'video';
+  poster?: string;
   alt?: string;
   title?: string;
   subtitle?: string;
@@ -985,7 +987,7 @@ const CircularCarousel = ({
   };
 
   const current = list[active] || list[0];
-  const label = current ? current.title || current.alt || `Image ${active + 1}` : '';
+  const label = current ? current.alt || current.title || `Image ${active + 1}` : '';
 
   const renderTile = (item: CircularCarouselItem, tile: Tile, back: boolean, index: number) => {
     const strip = back ? tile.total - 1 - tile.index : tile.index;
@@ -1019,14 +1021,29 @@ const CircularCarousel = ({
           className="circular-carousel__frame cc-frame absolute left-0 top-0 w-full overflow-hidden"
           style={{ height: axis === 'x' ? size : cardH, borderRadius: frameRadius }}
         >
-          <img
-            className="circular-carousel__photo cc-photo pointer-events-none absolute block max-w-none select-none object-cover [-webkit-user-drag:none]"
-            src={item.src}
-            alt=""
-            draggable={false}
-            decoding="async"
-            style={photoStyle}
-          />
+          {item.media === 'video' ? (
+            <video
+              className="circular-carousel__photo circular-carousel__video cc-photo pointer-events-none absolute block max-w-none select-none object-cover"
+              src={item.src}
+              poster={item.poster}
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="metadata"
+              aria-hidden="true"
+              style={photoStyle}
+            />
+          ) : (
+            <img
+              className="circular-carousel__photo cc-photo pointer-events-none absolute block max-w-none select-none object-cover [-webkit-user-drag:none]"
+              src={item.src}
+              alt=""
+              draggable={false}
+              decoding="async"
+              style={photoStyle}
+            />
+          )}
           {gone && (
             <img
               key={`leaving-${leaving.id}`}
@@ -1095,7 +1112,8 @@ const CircularCarousel = ({
                   data-cc-index={index}
                   role="group"
                   aria-roledescription="slide"
-                  aria-label={`${item.title || item.alt || `Image ${index + 1}`}, ${index + 1} of ${count}`}
+                  aria-label={`${item.alt || item.title || `Image ${index + 1}`}, ${index + 1} of ${count}`}
+                  data-active={index === active ? '' : undefined}
                 >
                   {tiles.map(tile => renderTile(item, tile, false, index))}
                   {layout.backfaces && tiles.map(tile => renderTile(item, tile, true, index))}

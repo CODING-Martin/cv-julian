@@ -1,0 +1,64 @@
+{
+  "version": 1,
+  "project": {
+    "name": "nueve-studio-replica",
+    "productType": null,
+    "stack": [
+      "react",
+      "shadcn",
+      "vite"
+    ]
+  },
+  "sources": {
+    "tokens": [],
+    "components": [],
+    "assets": [
+      "assets"
+    ],
+    "instructions": []
+  },
+  "design": {
+    "colorMode": "unknown",
+    "colors": {},
+    "typography": {},
+    "spacing": {},
+    "radius": {},
+    "shadows": {},
+    "motion": {},
+    "density": "unknown"
+  },
+  "components": {
+    "installed": [],
+    "preferredPrimitives": [],
+    "patterns": []
+  },
+  "constraints": {
+    "must": [],
+    "avoid": []
+  },
+  "decisions": [
+    {
+      "decision": "Use a three-column editorial video grid on desktop and a horizontal scroll-snap rail on phones and tablets; tapping a project opens a full video-and-details dialog.",
+      "reason": "Most visitors arrive from Instagram on touch devices, so the interaction must be obvious, swipeable and comfortable at phone and tablet sizes while preserving the site's monochrome editorial language."
+    },
+    {
+      "decision": "On iPhone, make the entire video-detail backdrop the scroll container and provide large explicit mute and fullscreen controls below the player.",
+      "reason": "Mobile Safari reserves continuous volume for device controls and its native fullscreen affordance is small, so the web UI should expose reliable mute and fullscreen actions without trapping the project text below the viewport."
+    }
+  ],
+  "evidence": [
+    {
+      "fact": "project.stack:react",
+      "source": "package.json"
+    },
+    {
+      "fact": "project.stack:shadcn",
+      "source": "components.json"
+    },
+    {
+      "fact": "project.stack:vite",
+      "source": "package.json"
+    }
+  ],
+  "generatedAt": "2026-11-08T05:02:18.025Z"
+}

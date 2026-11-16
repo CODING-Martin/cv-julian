@@ -61,6 +61,7 @@
   user-select: none;
   -webkit-user-drag: none;
 }
+.circular-carousel__video { object-position: 50% 42%; }
 .circular-carousel__photo--leaving { animation: circular-carousel-leave 700ms cubic-bezier(.33, 1, .68, 1) both; }
 .circular-carousel__shade,
 .circular-carousel__inner { position: absolute; inset: 0; pointer-events: none; }

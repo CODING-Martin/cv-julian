@@ -1,42 +1,55 @@
-import { Component, type CSSProperties, type ReactNode } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { createRoot as createClientRoot } from 'react-dom/client';
 import CircularCarousel, { type CircularCarouselItem } from './components/CircularCarousel';
-import GooeyNav from './components/GooeyNav';
 import './hero-carousel.css';
 
-const image = (id: string) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=900&h=1600&q=85`;
+const serviceMarqueeItems = [
+  'CONTENT CREATION',
+  'VIDEO PRODUCTION',
+  'VIDEO EDITING',
+  'REELS',
+  'TIKTOK',
+  'AUDIOVISUAL CONTENT',
+  'SOCIAL MEDIA',
+  'BRAND CONTENT'
+];
 
 const items: CircularCarouselItem[] = [
   {
-    src: image('photo-1503951914875-452162b0f3f1'),
-    title: '+840K vistas',
-    subtitle: 'Corte Bravo',
-    alt: 'Corte Bravo — El fade que cambió el barrio'
+    src: '/videos/bracco-equipamiento-carousel.mp4',
+    media: 'video',
+    poster: '/posters/bracco-equipamiento.jpg',
+    subtitle: '@BRACCOMENDOZA',
+    alt: 'Bracco — Presentación de accesorios automotrices'
   },
   {
-    src: image('photo-1483985988355-763728e1935b'),
-    title: '+2.2M vistas',
-    subtitle: 'Nova Atelier',
-    alt: 'Nova Atelier — Drop 03'
+    src: '/videos/ubuntu-carousel.mp4',
+    media: 'video',
+    poster: '/posters/ubuntu.jpg',
+    subtitle: '@UBUNTU',
+    alt: 'Ubuntu — Presentación de marca'
   },
   {
-    src: image('photo-1414235077428-338989a2e8c0'),
-    title: '+1.4M vistas',
-    subtitle: 'Brasa Norte',
-    alt: 'Brasa Norte — El plato que se agotó en 48 horas'
+    src: '/videos/huentata-carousel.mp4',
+    media: 'video',
+    poster: '/posters/huentata.jpg',
+    subtitle: '@HUENTATA TURISMO',
+    alt: 'Huentata — Experiencias turísticas'
   },
   {
-    src: image('photo-1495474472287-4d71bcdd2085'),
-    title: '+2.8M vistas',
-    subtitle: 'Nomad Roasters',
-    alt: 'Nomad Roasters — POV: el primer sorbo'
+    src: '/videos/flipping-carousel.mp4',
+    media: 'video',
+    poster: '/posters/flipping-carousel.jpg',
+    subtitle: '@FLIPPING',
+    alt: 'Flipping — Contenido inmobiliario'
   },
   {
-    src: image('photo-1596462502278-27bfdc403348'),
-    title: '4.1x ROAS',
-    subtitle: 'Aura Skin',
-    alt: 'Aura Skin — Rutina de 3 pasos'
+    src: '/videos/carteles-carousel.mp4',
+    media: 'video',
+    poster: '/posters/carteles-carousel.jpg',
+    subtitle: 'Publicidad exterior',
+    alt: 'Carteles — Campaña de alto impacto'
   }
 ];
 
@@ -53,7 +66,7 @@ function PhoneCarousel() {
         tilt={-4}
         perspective={1600}
         autoplay="drift"
-        speed={8}
+        speed={3.5}
         direction="right"
         draggable
         momentum={0.62}
@@ -62,16 +75,12 @@ function PhoneCarousel() {
         focusOnClick
         parallax={0.2}
         stretch={0.08}
-        depthFade={0.42}
-        fadeColor="#ffffff"
+        depthFade={0.86}
+        fadeColor="#090909"
         innerShade={0.16}
         cornerRadius={32}
         captions
       />
-      <div className="hero-phone-carousel__metric" aria-hidden="true">
-        <strong>71%</strong>
-        <span>Retención media</span>
-      </div>
       <div className="hero-phone-carousel__status" aria-hidden="true">
         <i />
         <span>Arrastrá para explorar</span>
@@ -83,19 +92,16 @@ function PhoneCarousel() {
 function StudioHero() {
   return (
     <div className="studio-hero">
-      <div className="studio-hero__grid-bg" aria-hidden="true" />
       <div className="container-x studio-hero__layout">
         <section className="studio-hero__message" aria-labelledby="studio-hero-title">
-          <p className="studio-hero__eyebrow"><i /> Estudio de contenido vertical</p>
-          <h1 id="studio-hero-title">Videos que hacen que tu marca se quede en la cabeza.</h1>
+          <h1 id="studio-hero-title">Creación de contenido y edición audiovisual.</h1>
           <p className="studio-hero__copy">
-            Ideamos, producimos y editamos contenido que detiene el scroll y transforma atención en ventas.
+              Producción y edición de videos para marcas, emprendimientos y proyectos.
           </p>
-          <p className="studio-hero__services">Estrategia · Producción · Edición · Distribución</p>
+          <div className="studio-hero__divider" aria-hidden="true" />
         </section>
 
         <div className="studio-hero__showcase">
-          <p className="studio-hero__showcase-label">Casos que mueven la aguja</p>
           <PhoneCarousel />
         </div>
       </div>
@@ -103,55 +109,539 @@ function StudioHero() {
   );
 }
 
-const navigationItems = [
-  { label: 'Home', href: '/' },
-  { label: 'Work', href: '/trabajos' },
-  { label: 'About', href: '/clientes' },
-  { label: 'Contact', href: '/contacto' }
-];
+const videoPortfolioSlots = [
+  {
+    number: '01',
+    client: 'Bracco',
+    modalTitle: '@BRACCO.MENDOZA',
+    category: 'Accesorios automotrices',
+    title: '3 errores que tenés que evitar',
+    description: 'Participación frente a cámara y presentación de productos de la marca.',
+    role: 'Participación frente a cámara, grabación y edición.',
+    duration: '0:34',
+    src: '/videos/bracco-3-errores.mp4',
+    poster: '/posters/bracco-3-errores.jpg'
+  },
+  {
+    number: '02',
+    client: 'Huentata',
+    modalTitle: '@HUENTATATURISMO',
+    category: 'Agencia de turismo',
+    title: 'La experiencia detrás de cada viaje',
+    description: 'Presentación de experiencias turísticas y comunicación de marca.',
+    role: 'Grabación y edición.',
+    duration: '0:50',
+    src: '/videos/huentata.mp4',
+    poster: '/posters/huentata.jpg'
+  },
+  {
+    number: '03',
+    client: 'Factores',
+    modalTitle: '@ABALLAYAGUSTIN.RE',
+    category: 'Inmobiliaria',
+    title: 'Qué define el valor de una propiedad',
+    description: 'Contenido educativo sobre el mercado inmobiliario y sus principales conceptos.',
+    role: 'Grabación y edición.',
+    duration: '0:43',
+    src: '/videos/factores-propiedad.mp4',
+    poster: '/posters/factores-propiedad.jpg'
+  },
+  {
+    number: '04',
+    client: 'Ubuntu',
+    modalTitle: '@UBUNTUDESARROLLOS',
+    category: 'Inmobiliaria',
+    title: 'Tu propiedad, acompañada por un equipo',
+    description: 'Presentación de marca y comunicación de servicios inmobiliarios.',
+    role: 'Grabación y edición.',
+    duration: '0:44',
+    src: '/videos/ubuntu.mp4',
+    poster: '/posters/ubuntu.jpg'
+  },
+  {
+    number: '05',
+    client: 'Flipping',
+    modalTitle: '@FLIPPING',
+    category: 'Inmobiliaria',
+    title: 'Cómo funciona el flipping inmobiliario',
+    description: 'Contenido informativo sobre inversiones y oportunidades inmobiliarias.',
+    role: 'Grabación y edición.',
+    duration: '0:48',
+    src: '/videos/flipping-inmobiliario.mp4',
+    poster: '/posters/flipping-inmobiliario.jpg'
+  },
+  {
+    number: '06',
+    client: 'Balzac',
+    modalTitle: '@BALZAC_SANDWICHS',
+    category: 'Gastronomía',
+    title: 'El lomito que se lleva todas las miradas',
+    description: 'Contenido gastronómico centrado en productos, recomendaciones y experiencias.',
+    role: 'Grabación y edición.',
+    duration: '0:24',
+    src: '/videos/barroluco.mp4',
+    poster: '/posters/barroluco.jpg'
+  },
+  {
+    number: '07',
+    client: 'Bracco',
+    modalTitle: '@BRACCO.MENDOZA',
+    category: 'Accesorios automotrices',
+    title: 'Todo para equipar tu camioneta',
+    description: 'Presentación de accesorios automotrices y demostraciones de productos de la marca.',
+    role: 'Participación frente a cámara, grabación y edición.',
+    duration: '0:39',
+    src: '/videos/bracco-equipamiento.mp4',
+    poster: '/posters/bracco-equipamiento.jpg'
+  },
+  {
+    number: '08',
+    client: "Rick's Burgers",
+    modalTitle: '@RICKSBURGERS_',
+    category: 'Gastronomía',
+    title: 'Sweet Bacon: una combinación inesperada',
+    description: 'Presentación de productos, preparación y contenido gastronómico para redes sociales.',
+    role: 'Grabación y edición.',
+    duration: '0:36',
+    src: '/videos/ricks-sweet-bacon.mp4',
+    poster: '/posters/ricks-sweet-bacon.jpg'
+  },
+  {
+    number: '09',
+    client: 'Vox Populi',
+    modalTitle: '@VOXPOPULIMZA',
+    category: 'Medio deportivo',
+    title: 'El Superclásico que quedó marcado',
+    description: 'Storytelling deportivo y contenido audiovisual sobre historias del fútbol.',
+    role: 'Grabación y edición.',
+    duration: '1:48',
+    src: '/videos/vox-populi-superclasico.mp4',
+    poster: '/posters/vox-populi-superclasico.jpg'
+  }
+] as const;
 
-function GooeyNavigation() {
-  const activeIndex = Math.max(
-    0,
-    navigationItems.findIndex(item => item.href === window.location.pathname)
-  );
+const portfolioTotal = String(videoPortfolioSlots.length).padStart(2, '0');
 
+type VideoPortfolioSlot = (typeof videoPortfolioSlots)[number];
+type ReadyVideoPortfolioSlot = Extract<VideoPortfolioSlot, { readonly src: string }>;
+
+function getPortfolioTitle(slot: VideoPortfolioSlot) {
+  return 'modalTitle' in slot ? slot.modalTitle : slot.title;
+}
+
+function getPortfolioTitleSizeClass(slot: VideoPortfolioSlot) {
+  return getPortfolioTitle(slot).length >= 15 ? 'portfolio-video-title--long' : '';
+}
+
+function PlayIcon() {
   return (
-    <GooeyErrorBoundary>
-      <GooeyNav
-        items={navigationItems}
-        initialActiveIndex={activeIndex}
-        theme="dark"
-        color="#090909"
-        activeTextColor="#ffffff"
-        colors={['#090909']}
-        size="md"
-        frame={false}
-        particleCount={15}
-        spread={62}
-        animationTime={450}
-        timeVariance={300}
-        gooeyness={0.55}
-        wobble={0.55}
-        hoverEffect={false}
-        style={{ '--gn-ink': '#101010', '--gn-muted': 'rgba(16, 16, 16, 0.56)' } as CSSProperties}
-        onChange={(index: number, item: { label: string }) => console.log(index, item.label)}
-        className="site-gooey-nav"
-      />
-    </GooeyErrorBoundary>
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M8 5.75v12.5L18 12 8 5.75Z" fill="currentColor" />
+    </svg>
   );
 }
 
-class GooeyErrorBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
+function CloseIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="m6.75 6.75 10.5 10.5m0-10.5-10.5 10.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+    </svg>
+  );
+}
 
-  static getDerivedStateFromError() {
-    return { failed: true };
+function SoundIcon({ muted }: { muted: boolean }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M5.5 9.25H9l4-3.25v12l-4-3.25H5.5v-5.5Z" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.7" />
+      {muted ? (
+        <path d="m16.25 9.25 3.5 5.5m0-5.5-3.5 5.5" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+      ) : (
+        <path d="M16.25 9.25c1.4 1.5 1.4 4 0 5.5m2.25-7.7c2.55 2.7 2.55 7.2 0 9.9" fill="none" stroke="currentColor" strokeLinecap="round" strokeWidth="1.7" />
+      )}
+    </svg>
+  );
+}
+
+function FullscreenIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M9 5H5v4m10-4h4v4M9 19H5v-4m10 4h4v-4" fill="none" stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="1.7" />
+    </svg>
+  );
+}
+
+type IOSVideoElement = HTMLVideoElement & {
+  webkitEnterFullscreen?: () => void;
+};
+
+function PortfolioVideoDialog({ slot, onClose }: { slot: ReadyVideoPortfolioSlot; onClose: () => void }) {
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [isMuted, setIsMuted] = useState(false);
+
+  const toggleMute = () => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    video.muted = !video.muted;
+    setIsMuted(video.muted);
+  };
+
+  const enterFullscreen = async () => {
+    const video = videoRef.current as IOSVideoElement | null;
+    if (!video) return;
+
+    try {
+      if (video.requestFullscreen) {
+        await video.requestFullscreen();
+        return;
+      }
+    } catch {
+      // Safari on iPhone may expose the standard API but still require its native video fullscreen method.
+    }
+
+    video.webkitEnterFullscreen?.();
+  };
+
+  useEffect(() => {
+    const previousOverflow = document.body.style.overflow;
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+    closeRef.current?.focus();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [onClose]);
+
+  return createPortal(
+    <div className="portfolio-video-dialog__backdrop" onMouseDown={event => {
+      if (event.target === event.currentTarget) onClose();
+    }}>
+      <section
+        className="portfolio-video-dialog"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="portfolio-video-dialog-title"
+      >
+        <button ref={closeRef} type="button" className="portfolio-video-dialog__close" onClick={onClose} aria-label="Cerrar proyecto">
+          <CloseIcon />
+        </button>
+
+        <div className="portfolio-video-dialog__layout">
+          <div className="portfolio-video-dialog__media">
+            <video
+              ref={videoRef}
+              src={slot.src}
+              poster={slot.poster}
+              preload="metadata"
+              playsInline
+              controls
+              controlsList="nodownload nofullscreen"
+              aria-label={`${slot.client}: ${slot.title}`}
+              onVolumeChange={event => setIsMuted(event.currentTarget.muted)}
+            >
+              Tu navegador no puede reproducir este video.
+            </video>
+            <div className="portfolio-video-dialog__media-actions" aria-label="Controles adicionales del video">
+              <button type="button" onClick={toggleMute} aria-pressed={isMuted}>
+                <SoundIcon muted={isMuted} />
+                <span>{isMuted ? 'Activar sonido' : 'Silenciar'}</span>
+              </button>
+              <button type="button" onClick={enterFullscreen}>
+                <FullscreenIcon />
+                <span>Pantalla completa</span>
+              </button>
+            </div>
+          </div>
+
+          <div className="portfolio-video-dialog__content">
+            <p className="portfolio-video-dialog__eyebrow">Proyecto {slot.number} / {portfolioTotal}</p>
+            <h2
+              id="portfolio-video-dialog-title"
+              className={getPortfolioTitleSizeClass(slot) || undefined}
+            >
+              {getPortfolioTitle(slot)}
+            </h2>
+            <p className="portfolio-video-dialog__description">{slot.description}</p>
+
+            <dl className="portfolio-video-dialog__facts">
+              <div className="portfolio-video-dialog__fact portfolio-video-dialog__fact--industry">
+                <dt>Industria</dt><dd>{slot.category}</dd>
+              </div>
+              <div className="portfolio-video-dialog__fact portfolio-video-dialog__fact--format">
+                <dt>Formato</dt><dd>Vertical · 9:16</dd>
+              </div>
+              <div className="portfolio-video-dialog__fact portfolio-video-dialog__fact--duration">
+                <dt>Duración</dt><dd>{slot.duration}</dd>
+              </div>
+              <div className="portfolio-video-dialog__fact portfolio-video-dialog__fact--role">
+                <dt>Rol en el proyecto</dt>
+                <dd>{'role' in slot ? slot.role : 'Producción y edición audiovisual.'}</dd>
+              </div>
+            </dl>
+
+          </div>
+        </div>
+      </section>
+    </div>,
+    document.body
+  );
+}
+
+function PortfolioVideoCard({ slot }: { slot: VideoPortfolioSlot }) {
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const closeDialog = () => {
+    setIsOpen(false);
+    window.requestAnimationFrame(() => triggerRef.current?.focus());
+  };
+
+  return (
+    <article className="portfolio-video-card portfolio-video-card--ready">
+      <button
+        ref={triggerRef}
+        type="button"
+        className="portfolio-video-card__media"
+        onClick={() => setIsOpen(true)}
+        aria-haspopup="dialog"
+        aria-label={`Ver proyecto ${slot.client}: ${getPortfolioTitle(slot)}`}
+      >
+        <img
+          src={slot.poster}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          width="720"
+          height="1280"
+        />
+        <span className="portfolio-video-card__index">{slot.number} / {portfolioTotal}</span>
+        <span className="portfolio-video-card__play" aria-hidden="true"><PlayIcon /></span>
+        <span className="portfolio-video-card__open-label">Ver proyecto</span>
+      </button>
+
+      <div className="portfolio-video-card__body">
+        <div className="portfolio-video-card__meta">
+          <span>{slot.category}</span>
+          <span>{slot.duration}</span>
+        </div>
+        <p className="portfolio-video-card__client">{slot.client}</p>
+        <h3 className={getPortfolioTitleSizeClass(slot) || undefined}>{getPortfolioTitle(slot)}</h3>
+        <p className="portfolio-video-card__description">{slot.description}</p>
+        <button type="button" className="portfolio-video-card__details" onClick={() => setIsOpen(true)}>
+          Ver video y detalles <span aria-hidden="true">↗</span>
+        </button>
+      </div>
+
+      {isOpen && <PortfolioVideoDialog slot={slot} onClose={closeDialog} />}
+    </article>
+  );
+}
+
+function VideoPortfolioSection() {
+  return (
+    <div className="container-x portfolio-video-section__inner">
+      <header className="portfolio-video-section__header">
+        <div className="portfolio-video-section__intro">
+          <h2>Algunos de <em>mis trabajos.</em></h2>
+        </div>
+      </header>
+
+      <div className="portfolio-video-grid" aria-label="Proyectos audiovisuales">
+        {videoPortfolioSlots.map(slot => <PortfolioVideoCard key={slot.number} slot={slot} />)}
+      </div>
+      <p className="portfolio-video-section__swipe-hint">Deslizá para ver más proyectos <span aria-hidden="true">→</span></p>
+    </div>
+  );
+}
+
+function StandalonePage() {
+  return (
+    <main className="studio-standalone-page">
+      <StudioHero />
+    </main>
+  );
+}
+
+const retiredPaths = ['/clientes', '/contacto'];
+
+function removeRetiredContent() {
+  const pathname = window.location.pathname.replace(/\/+$/, '') || '/';
+
+  if (retiredPaths.includes(pathname)) {
+    window.history.replaceState(null, '', '/');
+    window.dispatchEvent(new PopStateEvent('popstate'));
   }
 
-  render() {
-    return this.state.failed ? <span className="site-gooey-nav__fallback">Home · Work · About · Contact</span> : this.props.children;
-  }
+  document.querySelectorAll<HTMLAnchorElement | HTMLButtonElement>('a, button').forEach(element => {
+    const label = element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR');
+    if (label?.startsWith('impulsar mi marca')) element.remove();
+    if (label?.startsWith('ver los 9 casos')) element.remove();
+
+    if (label?.includes('plazas') && label.includes('2026')) {
+      element.closest('section')?.remove() ?? element.remove();
+    }
+  });
+
+  document.querySelectorAll<HTMLAnchorElement>('a[href="/clientes"], a[href="/contacto"]').forEach(link => link.remove());
+
+  Array.from(document.querySelectorAll<HTMLElement>('div'))
+    .find(
+      element =>
+        element.className.includes('mt-12 grid') &&
+        element.textContent?.includes('Respuesta') &&
+        element.textContent?.includes('Sin contratos largos')
+    )
+    ?.remove();
+
+  const availabilityCircle = Array.from(document.querySelectorAll<SVGTextPathElement>('textPath')).find(
+    element => element.textContent?.includes('2 PLAZAS') && element.textContent?.includes('2026')
+  );
+  availabilityCircle?.closest('svg')?.parentElement?.remove();
+
+  const selectedWorkLabel = Array.from(document.querySelectorAll<HTMLElement>('span')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR').startsWith('trabajos seleccionados')
+  );
+  selectedWorkLabel?.parentElement?.remove();
+
+  Array.from(document.querySelectorAll<HTMLParagraphElement>('p'))
+    .find(element => /^\d+\s+de\s+\d+\s+proyectos$/i.test(element.textContent?.replace(/\s+/g, ' ').trim() ?? ''))
+    ?.remove();
+}
+
+function removeProcessSection() {
+  const processLabel = Array.from(document.querySelectorAll<HTMLElement>('span')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR').startsWith('el proceso')
+  );
+  processLabel?.closest('section')?.remove();
+}
+
+function removeImpactMetrics() {
+  document.querySelector<HTMLElement>('[aria-label="Métricas de impacto"]')?.remove();
+}
+
+function updateWorkCategoryLabels() {
+  const filterButtons = Array.from(document.querySelectorAll<HTMLButtonElement>('#trabajos button[aria-pressed]'));
+  const categories = [
+    ['Todos', 'Todos'],
+    ['Instagram Reels', 'Reels'],
+    ['TikTok Virales', 'TikTok'],
+    ['Ads de Conversión', 'Publicidad'],
+    ['UGC', 'Producción audiovisual'],
+    ['Edición CapCut Pro', 'Edición de video']
+  ] as const;
+
+  filterButtons.forEach(button => {
+    const label = Array.from(button.querySelectorAll<HTMLSpanElement>('span')).find(span => span.textContent?.trim());
+    const current = label?.textContent?.trim();
+    const category = categories.find(([source]) => source === current);
+
+    if (!label || !category) return;
+
+    if (label.textContent !== category[1]) label.textContent = category[1];
+  });
+}
+
+function updateCapabilityMarquee() {
+  const section = document.querySelector<HTMLElement>('[aria-label="Clientes y capacidades"]');
+  if (!section || section.dataset.marqueePhrases === 'true') return;
+
+  const rows = Array.from(section.children) as HTMLElement[];
+  const clientRow = rows.find(row => row.textContent?.includes('AURA SKIN')) ?? rows[0];
+  const serviceRow = rows.find(row => row.textContent?.includes('CapCut Pro')) ?? rows[1];
+
+  const updateRow = (row: HTMLElement | undefined, items: string[]) => {
+    if (!row) return false;
+
+    const labels = Array.from(row.querySelectorAll<HTMLSpanElement>('span')).filter(span => span.textContent?.trim());
+    if (!labels.length) return false;
+
+    labels.forEach((label, index) => {
+      label.textContent = items[index % items.length];
+    });
+    return true;
+  };
+
+  const clientsUpdated = updateRow(clientRow, serviceMarqueeItems);
+  const servicesUpdated = updateRow(serviceRow, serviceMarqueeItems);
+
+  if (clientsUpdated && servicesUpdated) section.dataset.marqueePhrases = 'true';
+}
+
+const videoMetricPattern = /(?:vistas?|retenci[oó]n|roas|ctr|reservas?|guardados?|leads?|sell[- ]out|suscripciones?|comentarios?|ingresos?|cpa|altas|consultas|ticket medio|ugc recibido)/i;
+
+function removeVideoMetricOverlay(overlay: HTMLElement | undefined) {
+  if (!overlay) return;
+
+  Array.from(overlay.querySelectorAll<HTMLElement>('p, span')).forEach(label => {
+    if (!videoMetricPattern.test(label.textContent?.replace(/\s+/g, ' ').trim() ?? '')) return;
+
+    const playerCaption = label.closest<HTMLElement>('[class*="bottom-0"]');
+    if (playerCaption && playerCaption !== overlay) {
+      playerCaption.remove();
+      return;
+    }
+
+    label.closest<HTMLElement>('[class*="rounded-full"]')?.remove();
+  });
+}
+
+function removeLegacyVideoMetrics() {
+  document.querySelectorAll<HTMLElement>('button[aria-label^="Ver caso de estudio de "]').forEach(card => {
+    card.querySelectorAll<HTMLElement>('[class*="rounded-full"]').forEach(badge => {
+      if (videoMetricPattern.test(badge.textContent?.replace(/\s+/g, ' ').trim() ?? '')) badge.remove();
+    });
+
+    const overlay = Array.from(card.querySelectorAll<HTMLElement>('[class*="pointer-events-none"]')).find(element =>
+      videoMetricPattern.test(element.textContent?.replace(/\s+/g, ' ').trim() ?? '')
+    );
+    removeVideoMetricOverlay(overlay);
+  });
+}
+
+function simplifyCaseStudyDialogs() {
+  document.querySelectorAll<HTMLElement>('[role="dialog"]').forEach(dialog => {
+    const title = dialog.querySelector<HTMLHeadingElement>('h3');
+    if (!title) return;
+
+    const previewLabel = Array.from(dialog.querySelectorAll<HTMLParagraphElement>('p')).find(element =>
+      element.textContent?.includes('Preview del corte final entregado')
+    );
+    if (previewLabel) {
+      if (previewLabel.textContent !== 'Preview del video') previewLabel.textContent = 'Preview del video';
+      previewLabel.classList.add('case-study-preview-label');
+      previewLabel.parentElement?.classList.add('case-study-media-column');
+    }
+
+    Array.from(dialog.querySelectorAll<HTMLElement>('div'))
+      .find(element =>
+        element.className.includes('flex-wrap') &&
+        Array.from(element.children).filter(child => child instanceof HTMLSpanElement).length === 3
+      )
+      ?.remove();
+
+    title.previousElementSibling?.remove();
+    title.classList.add('case-study-title');
+
+    const results = title.nextElementSibling as HTMLElement | null;
+    if (results?.className.includes('grid-cols-3')) results.remove();
+
+    const details = title.nextElementSibling as HTMLElement | null;
+    if (!details) return;
+
+    details.classList.add('case-study-details');
+    Array.from(details.querySelectorAll<HTMLParagraphElement>('p'))
+      .find(element => element.textContent?.trim().toLocaleLowerCase('es-AR') === 'técnicas aplicadas')
+      ?.parentElement?.remove();
+
+    dialog.querySelector<HTMLAnchorElement>('a[href="https://instagram.com"]')?.remove();
+  });
 }
 
 function mountCarousel() {
@@ -169,7 +659,7 @@ function mountCarousel() {
 }
 
 function mountStudioHero() {
-  if (window.location.pathname !== '/' || !document.querySelector('[aria-label="Métricas de impacto"]')) return false;
+  if (window.location.pathname !== '/') return false;
 
   const headline = Array.from(document.querySelectorAll('h1')).find(element =>
     element.textContent?.replace(/\s+/g, ' ').toUpperCase().includes('TRANSFORMAMOS')
@@ -185,57 +675,131 @@ function mountStudioHero() {
   return true;
 }
 
-function mountGooeyNavigation() {
-  const originalNavigation = document.querySelector<HTMLElement>('[aria-label="Navegación principal"]');
-  const header = originalNavigation?.parentElement;
-  if (!originalNavigation || !header) return false;
+function mountVideoPortfolio() {
+  if (window.location.pathname !== '/') return false;
 
-  let host = header.querySelector<HTMLElement>('[data-gooey-nav-host]');
-  if (host) return false;
+  const section = document.querySelector<HTMLElement>('#trabajos');
+  if (!section || section.dataset.videoPortfolioMounted) return false;
 
-  host = document.createElement('div');
-  host.dataset.gooeyNavHost = 'true';
-  originalNavigation.style.display = 'none';
-  originalNavigation.before(host);
-  createClientRoot(host).render(<GooeyNavigation />);
+  section.dataset.videoPortfolioMounted = 'true';
+  section.className = 'portfolio-video-section';
+  section.replaceChildren();
+  createClientRoot(section).render(<VideoPortfolioSection />);
   return true;
 }
 
-function compactFooter() {
-  let changed = false;
+function removeTopNavigation() {
+  const brand = document.querySelector<HTMLElement>('[aria-label="NUEVE, inicio"]');
+  const header = brand?.closest<HTMLElement>('header');
+  if (!header) return false;
 
-  document.querySelectorAll<HTMLElement>('footer').forEach(footer => {
-    if (footer.dataset.compactFooter) return;
+  header.remove();
+  return true;
+}
 
-    footer.dataset.compactFooter = 'true';
+function removeFooter() {
+  document.querySelectorAll<HTMLElement>('footer').forEach(footer => footer.remove());
+}
 
-    const main = footer.querySelector<HTMLElement>('.container-x.grid');
-    if (main) main.dataset.footerMain = 'true';
+function addCopyrightNotice() {
+  const root = document.getElementById('root');
+  if (!root || root.querySelector('.site-copyright')) return;
 
-    const giantWordmark = Array.from(
-      footer.querySelectorAll<HTMLElement>('[aria-hidden="true"]')
-    ).find(element => {
-      const text = element.textContent?.replace(/\s+/g, '').toUpperCase();
-      return text === 'NUEVE®' && element.className.includes('19.5vw');
-    });
+  const notice = document.createElement('p');
+  notice.className = 'site-copyright';
+  notice.textContent = 'Todos los derechos reservados · 2026';
+  root.append(notice);
+}
 
-    const wordmarkBlock = giantWordmark?.parentElement?.parentElement;
-    if (wordmarkBlock) wordmarkBlock.dataset.footerWordmark = 'true';
+function addContactQuestionMark() {
+  const heading = Array.from(document.querySelectorAll<HTMLHeadingElement>('h1, h2')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR') === '¿trabajamos juntos'
+  );
 
-    changed = true;
-  });
+  if (!heading || heading.textContent?.trim().endsWith('?')) return;
 
-  return changed;
+  const styledEnding = Array.from(heading.querySelectorAll<HTMLElement>('span, em')).find(element =>
+    element.textContent?.trim().toLocaleLowerCase('es-AR') === 'juntos'
+  );
+
+  if (styledEnding) {
+    styledEnding.textContent = `${styledEnding.textContent?.trim()}?`;
+    return;
+  }
+
+  heading.append('?');
+}
+
+function removeContactGrid() {
+  const heading = Array.from(document.querySelectorAll<HTMLHeadingElement>('h1, h2')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR').startsWith('¿trabajamos juntos')
+  );
+  const section = heading?.closest<HTMLElement>('section');
+
+  if (!section) return;
+
+  section.querySelectorAll<HTMLElement>('[class*="bg-hairline-grid"]').forEach(grid => grid.remove());
+  Array.from(section.children)
+    .find(element =>
+      element.getAttribute('aria-hidden') === 'true' &&
+      element instanceof HTMLElement &&
+      element.style.backgroundImage.includes('linear-gradient')
+    )
+    ?.remove();
+
+  Array.from(section.querySelectorAll<HTMLElement>('span')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR') === 'siguiente paso'
+  )?.parentElement?.style.setProperty('border-top', '0');
+}
+
+function mountStandalonePage() {
+  const root = document.getElementById('root');
+  const hasLegacyHero = Array.from(document.querySelectorAll('h1')).some(element =>
+    element.textContent?.replace(/\s+/g, ' ').toUpperCase().includes('TRANSFORMAMOS')
+  );
+
+  if (!root || root.dataset.standaloneMounted || document.querySelector('.studio-standalone-page') || hasLegacyHero) {
+    return false;
+  }
+
+  root.dataset.standaloneMounted = 'true';
+  root.replaceChildren();
+  createClientRoot(root).render(<StandalonePage />);
+  return true;
 }
 
 const observer = new MutationObserver(() => {
   mountStudioHero();
+  mountVideoPortfolio();
   mountCarousel();
-  mountGooeyNavigation();
-  compactFooter();
+  removeTopNavigation();
+  removeFooter();
+  addCopyrightNotice();
+  addContactQuestionMark();
+  removeContactGrid();
+  removeRetiredContent();
+  removeProcessSection();
+  removeImpactMetrics();
+  updateWorkCategoryLabels();
+  updateCapabilityMarquee();
+  removeLegacyVideoMetrics();
+  simplifyCaseStudyDialogs();
 });
 observer.observe(document.documentElement, { childList: true, subtree: true });
 mountStudioHero();
+mountVideoPortfolio();
 mountCarousel();
-mountGooeyNavigation();
-compactFooter();
+removeTopNavigation();
+removeFooter();
+addCopyrightNotice();
+addContactQuestionMark();
+removeContactGrid();
+removeRetiredContent();
+removeProcessSection();
+removeImpactMetrics();
+updateWorkCategoryLabels();
+updateCapabilityMarquee();
+window.setTimeout(updateCapabilityMarquee, 250);
+window.setTimeout(updateCapabilityMarquee, 1000);
+removeLegacyVideoMetrics();
+simplifyCaseStudyDialogs();

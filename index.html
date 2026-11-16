@@ -166,5 +166,53 @@
         });
       }
     </script>
+    <script>
+      (function () {
+        var whatsappUrl = "https://wa.me/5492612573805";
+        var legacyWhatsappUrl = /^https:\/\/wa\.me\//i;
+        var legacyPhone = "+34 600 123 456";
+        var displayedPhone = "+54 261 257 3805";
+        var nativeWindowOpen = window.open;
+
+        window.open = function (url, target, features) {
+          if (typeof url === "string" && legacyWhatsappUrl.test(url)) {
+            var queryStart = url.indexOf("?");
+            var query = queryStart === -1 ? "" : url.slice(queryStart);
+            url = whatsappUrl + query;
+          }
+
+          return nativeWindowOpen.call(window, url, target, features);
+        };
+
+        function updateWhatsappContact() {
+          document.querySelectorAll('a[href]').forEach(function (link) {
+            var href = link.getAttribute("href") || "";
+            if (!legacyWhatsappUrl.test(href)) return;
+
+            var queryStart = href.indexOf("?");
+            var query = queryStart === -1 ? "" : href.slice(queryStart);
+            var nextHref = whatsappUrl + query;
+            if (href !== nextHref) link.setAttribute("href", nextHref);
+          });
+
+          var walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+          var node;
+          while ((node = walker.nextNode())) {
+            if (node.nodeValue && node.nodeValue.includes(legacyPhone)) {
+              node.nodeValue = node.nodeValue.replaceAll(legacyPhone, displayedPhone);
+            }
+          }
+        }
+
+        updateWhatsappContact();
+        new MutationObserver(updateWhatsappContact).observe(document.body, {
+          childList: true,
+          subtree: true,
+          attributes: true,
+          attributeFilter: ["href"],
+          characterData: true
+        });
+      })();
+    </script>
   </body>
 </html>
