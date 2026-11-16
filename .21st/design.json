@@ -50,8 +50,8 @@
       "reason": "The title gains the requested paper-fold motion without changing the established layout, while the independently timed subtitle keeps the hierarchy clear and the two elements visually distinct."
     },
     {
-      "decision": "Reveal the portfolio heading and dark contact call-to-action with one-time, staggered horizontal entrances driven by IntersectionObserver and CSS transforms.",
-      "reason": "The additional motion gives both editorial sections a clear entrance while remaining lightweight, compositor-friendly and respectful of reduced-motion preferences."
+      "decision": "Reveal the portfolio heading, each portfolio card and the dark contact call-to-action only when they enter the viewport; use one-time staggered entrances driven by IntersectionObserver and CSS transforms.",
+      "reason": "Triggering each element at the moment it becomes visible makes the page feel intentional without replaying motion or animating off-screen content; the cards use a restrained fade-up while the editorial headings keep their horizontal entrance, all remaining compositor-friendly and respectful of reduced-motion preferences."
     }
   ],
   "evidence": [

@@ -466,6 +466,21 @@ body {
   will-change: auto;
 }
 
+.motion-reveal-on-view {
+  transform: translate3d(0, 1.5rem, 0);
+  opacity: 0;
+  transition:
+    transform 640ms cubic-bezier(0.22, 1, 0.36, 1) var(--motion-reveal-delay, 0ms),
+    opacity 500ms ease-out var(--motion-reveal-delay, 0ms);
+  will-change: transform, opacity;
+}
+
+.motion-reveal-on-view--visible {
+  transform: translate3d(0, 0, 0);
+  opacity: 1;
+  will-change: auto;
+}
+
 .portfolio-video-section__intro > p {
   max-width: 30rem;
   margin: 0;
@@ -1036,6 +1051,12 @@ body {
   }
 
   .motion-reveal-section .motion-reveal-item {
+    transform: none;
+    opacity: 1;
+    transition: none;
+  }
+
+  .motion-reveal-on-view {
     transform: none;
     opacity: 1;
     transition: none;

@@ -782,6 +782,12 @@ function getSectionRevealObserver() {
       if (!entry.isIntersecting) return;
 
       const target = entry.target as HTMLElement;
+      if (target.classList.contains('motion-reveal-on-view')) {
+        target.classList.add('motion-reveal-on-view--visible');
+        sectionRevealObserver?.unobserve(target);
+        return;
+      }
+
       const section = target.classList.contains('motion-reveal-section')
         ? target
         : target.closest<HTMLElement>('.motion-reveal-section');
@@ -804,6 +810,22 @@ function addRevealItem(element: HTMLElement | null | undefined, delay: number) {
 
   element.classList.add('motion-reveal-item');
   element.style.setProperty('--motion-reveal-delay', `${delay}ms`);
+}
+
+function observeRevealItem(element: HTMLElement, delay: number) {
+  if (element.dataset.motionRevealObserved) return;
+
+  element.dataset.motionRevealObserved = 'true';
+  element.classList.add('motion-reveal-on-view');
+  element.style.setProperty('--motion-reveal-delay', `${delay}ms`);
+
+  const revealObserver = getSectionRevealObserver();
+  if (!revealObserver || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    element.classList.add('motion-reveal-on-view--visible');
+    return;
+  }
+
+  revealObserver.observe(element);
 }
 
 function observeRevealSection(
@@ -832,6 +854,10 @@ function setupLightweightSectionReveals() {
   if (portfolioSection && portfolioTitle) {
     addRevealItem(portfolioTitle, 0);
     observeRevealSection(portfolioSection, 'portfolio', portfolioTitle);
+
+    portfolioSection.querySelectorAll<HTMLElement>('.portfolio-video-card').forEach((card, index) => {
+      observeRevealItem(card, (index % 3) * 80);
+    });
   }
 
   const contactTitle = Array.from(document.querySelectorAll<HTMLHeadingElement>('h1, h2')).find(element =>
