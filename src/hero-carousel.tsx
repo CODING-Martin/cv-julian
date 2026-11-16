@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRoot as createClientRoot } from 'react-dom/client';
 import CircularCarousel, { type CircularCarouselItem } from './components/CircularCarousel';
@@ -20,35 +20,35 @@ const items: CircularCarouselItem[] = [
   {
     src: '/videos/bracco-equipamiento-carousel.mp4',
     media: 'video',
-    poster: '/posters/bracco-equipamiento.jpg',
+    poster: '/posters/bracco-equipamiento-480.webp',
     subtitle: '@BRACCOMENDOZA',
     alt: 'Bracco — Presentación de accesorios automotrices'
   },
   {
     src: '/videos/ubuntu-carousel.mp4',
     media: 'video',
-    poster: '/posters/ubuntu.jpg',
+    poster: '/posters/ubuntu-480.webp',
     subtitle: '@UBUNTU',
     alt: 'Ubuntu — Presentación de marca'
   },
   {
     src: '/videos/huentata-carousel.mp4',
     media: 'video',
-    poster: '/posters/huentata.jpg',
+    poster: '/posters/huentata-480.webp',
     subtitle: '@HUENTATA TURISMO',
     alt: 'Huentata — Experiencias turísticas'
   },
   {
     src: '/videos/flipping-carousel.mp4',
     media: 'video',
-    poster: '/posters/flipping-carousel.jpg',
+    poster: '/posters/flipping-carousel-480.webp',
     subtitle: '@FLIPPING',
     alt: 'Flipping — Contenido inmobiliario'
   },
   {
     src: '/videos/carteles-carousel.mp4',
     media: 'video',
-    poster: '/posters/carteles-carousel.jpg',
+    poster: '/posters/carteles-carousel-480.webp',
     subtitle: 'Publicidad exterior',
     alt: 'Carteles — Campaña de alto impacto'
   }
@@ -140,7 +140,7 @@ const videoPortfolioSlots = [
     role: 'Participación frente a cámara, grabación y edición.',
     duration: '0:34',
     src: '/videos/bracco-3-errores.mp4',
-    poster: '/posters/bracco-3-errores.jpg'
+    poster: '/posters/bracco-3-errores.webp'
   },
   {
     number: '02',
@@ -152,7 +152,7 @@ const videoPortfolioSlots = [
     role: 'Grabación y edición.',
     duration: '0:50',
     src: '/videos/huentata.mp4',
-    poster: '/posters/huentata.jpg'
+    poster: '/posters/huentata.webp'
   },
   {
     number: '03',
@@ -164,7 +164,7 @@ const videoPortfolioSlots = [
     role: 'Grabación y edición.',
     duration: '0:43',
     src: '/videos/factores-propiedad.mp4',
-    poster: '/posters/factores-propiedad.jpg'
+    poster: '/posters/factores-propiedad.webp'
   },
   {
     number: '04',
@@ -176,7 +176,7 @@ const videoPortfolioSlots = [
     role: 'Grabación y edición.',
     duration: '0:44',
     src: '/videos/ubuntu.mp4',
-    poster: '/posters/ubuntu.jpg'
+    poster: '/posters/ubuntu.webp'
   },
   {
     number: '05',
@@ -188,7 +188,7 @@ const videoPortfolioSlots = [
     role: 'Grabación y edición.',
     duration: '0:48',
     src: '/videos/flipping-inmobiliario.mp4',
-    poster: '/posters/flipping-inmobiliario.jpg'
+    poster: '/posters/flipping-inmobiliario.webp'
   },
   {
     number: '06',
@@ -200,7 +200,7 @@ const videoPortfolioSlots = [
     role: 'Grabación y edición.',
     duration: '0:24',
     src: '/videos/barroluco.mp4',
-    poster: '/posters/barroluco.jpg'
+    poster: '/posters/barroluco.webp'
   },
   {
     number: '07',
@@ -212,7 +212,7 @@ const videoPortfolioSlots = [
     role: 'Participación frente a cámara, grabación y edición.',
     duration: '0:39',
     src: '/videos/bracco-equipamiento.mp4',
-    poster: '/posters/bracco-equipamiento.jpg'
+    poster: '/posters/bracco-equipamiento.webp'
   },
   {
     number: '08',
@@ -224,7 +224,7 @@ const videoPortfolioSlots = [
     role: 'Grabación y edición.',
     duration: '0:36',
     src: '/videos/ricks-sweet-bacon.mp4',
-    poster: '/posters/ricks-sweet-bacon.jpg'
+    poster: '/posters/ricks-sweet-bacon.webp'
   },
   {
     number: '09',
@@ -236,7 +236,7 @@ const videoPortfolioSlots = [
     role: 'Grabación y edición.',
     duration: '1:48',
     src: '/videos/vox-populi-superclasico.mp4',
-    poster: '/posters/vox-populi-superclasico.jpg'
+    poster: '/posters/vox-populi-superclasico.webp'
   }
 ] as const;
 
@@ -251,6 +251,15 @@ function getPortfolioTitle(slot: VideoPortfolioSlot) {
 
 function getPortfolioTitleSizeClass(slot: VideoPortfolioSlot) {
   return getPortfolioTitle(slot).length >= 12 ? 'portfolio-video-title--long' : '';
+}
+
+function getResponsivePosterSet(poster: string) {
+  const base = poster.replace(/\.webp$/i, '');
+  return `${base}-360.webp 360w, ${base}-480.webp 480w`;
+}
+
+function getCardPoster(poster: string) {
+  return poster.replace(/\.webp$/i, '-480.webp');
 }
 
 function PlayIcon() {
@@ -434,7 +443,9 @@ function PortfolioVideoCard({ slot }: { slot: VideoPortfolioSlot }) {
         aria-label={`Ver proyecto ${slot.client}: ${getPortfolioTitle(slot)}`}
       >
         <img
-          src={slot.poster}
+          src={getCardPoster(slot.poster)}
+          srcSet={getResponsivePosterSet(slot.poster)}
+          sizes="(max-width: 559px) 82vw, (max-width: 899px) 42vw, 31vw"
           alt=""
           loading="lazy"
           decoding="async"
@@ -481,11 +492,78 @@ function VideoPortfolioSection() {
   );
 }
 
-function StandalonePage() {
+function ServiceMarquee() {
+  const rowItems = [...serviceMarqueeItems, ...serviceMarqueeItems];
+
   return (
-    <main className="studio-standalone-page">
-      <StudioHero />
-    </main>
+    <section className="service-marquee" aria-label="Servicios audiovisuales">
+      {[false, true].map(reverse => (
+        <div
+          key={String(reverse)}
+          className={`service-marquee__row${reverse ? ' service-marquee__row--secondary' : ''}`}
+        >
+          <div className={`service-marquee__track${reverse ? ' service-marquee__track--reverse' : ''}`}>
+            {rowItems.map((item, index) => (
+              <span className="service-marquee__item" key={`${item}-${index}`} aria-hidden={index >= serviceMarqueeItems.length}>
+                {item}<i aria-hidden="true" />
+              </span>
+            ))}
+          </div>
+        </div>
+      ))}
+    </section>
+  );
+}
+
+function WhatsappIcon() {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24">
+      <path d="M20.5 11.7a8.5 8.5 0 0 1-12.6 7.4L3.5 20.5l1.4-4.2A8.5 8.5 0 1 1 20.5 11.7Z" fill="none" stroke="currentColor" strokeLinejoin="round" strokeWidth="1.6" />
+      <path d="M8.7 7.8c.3-.3.7-.2.9.2l.8 1.8c.1.3.1.5-.1.7l-.6.7c.7 1.4 1.8 2.4 3.2 3.1l.7-.8c.2-.2.5-.3.7-.2l1.8.8c.4.2.5.6.3.9-.5.9-1.4 1.4-2.4 1.2-3.8-.8-6.8-3.8-7.5-7.5-.2-.4.1-.7.4-.9Z" fill="currentColor" />
+    </svg>
+  );
+}
+
+function ContactSection() {
+  return (
+    <section className="studio-contact" aria-labelledby="studio-contact-title">
+      <div className="container-x studio-contact__inner">
+        <p className="studio-contact__eyebrow motion-reveal-item"><i aria-hidden="true" /> Siguiente paso</p>
+        <h2 id="studio-contact-title" className="motion-reveal-item">¿Trabajamos <em>Juntos?</em></h2>
+        <p className="studio-contact__copy motion-reveal-item">
+          Para consultas, proyectos o colaboraciones, contactame directamente.
+        </p>
+        <a
+          className="studio-contact__button motion-reveal-item"
+          href="https://wa.me/5492612573805"
+          target="_blank"
+          rel="noreferrer"
+        >
+          <WhatsappIcon />
+          <span>WhatsApp directo</span>
+        </a>
+      </div>
+    </section>
+  );
+}
+
+function StandalonePage() {
+  useLayoutEffect(() => {
+    setupLightweightSectionReveals();
+  }, []);
+
+  return (
+    <>
+      <main className="studio-standalone-page">
+        <StudioHero />
+        <ServiceMarquee />
+        <section id="trabajos" className="portfolio-video-section">
+          <VideoPortfolioSection />
+        </section>
+        <ContactSection />
+      </main>
+      <p className="site-copyright">Todos los derechos reservados · 2026</p>
+    </>
   );
 }
 
@@ -903,40 +981,8 @@ function mountStandalonePage() {
   return true;
 }
 
-const observer = new MutationObserver(() => {
-  mountStudioHero();
-  mountVideoPortfolio();
-  mountCarousel();
-  removeTopNavigation();
-  removeFooter();
-  addCopyrightNotice();
-  addContactQuestionMark();
-  removeContactGrid();
-  setupLightweightSectionReveals();
-  removeRetiredContent();
-  removeProcessSection();
-  removeImpactMetrics();
-  updateWorkCategoryLabels();
-  updateCapabilityMarquee();
-  removeLegacyVideoMetrics();
-  simplifyCaseStudyDialogs();
-});
-observer.observe(document.documentElement, { childList: true, subtree: true });
-mountStudioHero();
-mountVideoPortfolio();
-mountCarousel();
-removeTopNavigation();
-removeFooter();
-addCopyrightNotice();
-addContactQuestionMark();
-removeContactGrid();
-setupLightweightSectionReveals();
-removeRetiredContent();
-removeProcessSection();
-removeImpactMetrics();
-updateWorkCategoryLabels();
-updateCapabilityMarquee();
-window.setTimeout(updateCapabilityMarquee, 250);
-window.setTimeout(updateCapabilityMarquee, 1000);
-removeLegacyVideoMetrics();
-simplifyCaseStudyDialogs();
+const root = document.getElementById('root');
+
+if (!root) throw new Error('No se encontró el contenedor principal de la aplicación.');
+
+createClientRoot(root).render(<StandalonePage />);

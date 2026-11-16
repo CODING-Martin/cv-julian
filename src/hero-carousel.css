@@ -1,8 +1,72 @@
+@font-face {
+  font-family: 'Inter Tight';
+  font-style: normal;
+  font-weight: 400 900;
+  font-display: swap;
+  src: url('/fonts/inter-tight-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'Instrument Serif';
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/instrument-serif-italic-latin.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'JetBrains Mono';
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url('/fonts/jetbrains-mono-latin.woff2') format('woff2');
+}
+
 html,
 body {
   width: 100%;
   max-width: 100%;
+  margin: 0;
   overflow-x: hidden;
+}
+
+html {
+  background: #fff;
+  color-scheme: light;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+body {
+  background: #fff;
+  color: #090909;
+  font-family: 'Inter Tight', Arial, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+button,
+a {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+.container-x {
+  width: min(100% - 4rem, 94rem);
+  margin-inline: auto;
+}
+
+.studio-standalone-page {
+  width: 100%;
+  overflow: clip;
+  background: #fff;
 }
 
 /* Removes the unrelated builder badge injected by the original template. */
@@ -31,6 +95,12 @@ body {
   line-height: 1.4;
   text-align: center;
   text-transform: uppercase;
+}
+
+@media (max-width: 639px) {
+  .container-x {
+    width: min(100% - 2.5rem, 94rem);
+  }
 }
 
 .hero-phone-carousel {
@@ -374,6 +444,123 @@ body {
   border-radius: 50%;
   background: #080808;
   box-shadow: 0 0 0 4px rgba(8, 8, 8, 0.11);
+}
+
+.studio-contact {
+  overflow: hidden;
+  background: #090909;
+  color: #fff;
+}
+
+.studio-contact__inner {
+  min-height: min(44rem, 86svh);
+  padding-top: clamp(4rem, 8vw, 7.5rem);
+  padding-bottom: clamp(4.5rem, 8vw, 7.5rem);
+}
+
+.studio-contact__eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin: 0 0 clamp(3.25rem, 6vw, 5.5rem);
+  color: rgba(255, 255, 255, 0.6);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: clamp(0.62rem, 0.85vw, 0.78rem);
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+}
+
+.studio-contact__eyebrow i {
+  width: 0.45rem;
+  height: 0.45rem;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  background: #fff;
+}
+
+.studio-contact h2 {
+  max-width: 15ch;
+  margin: 0;
+  font-size: clamp(4.2rem, 10.2vw, 10.5rem);
+  font-weight: 830;
+  letter-spacing: -0.075em;
+  line-height: 0.84;
+}
+
+.studio-contact h2 em {
+  font-family: 'Instrument Serif', Georgia, serif;
+  font-weight: 400;
+  letter-spacing: -0.04em;
+}
+
+.studio-contact__copy {
+  max-width: 48rem;
+  margin: clamp(2.75rem, 5vw, 4.5rem) 0 0;
+  color: rgba(255, 255, 255, 0.66);
+  font-size: clamp(1rem, 1.45vw, 1.35rem);
+  line-height: 1.45;
+}
+
+.studio-contact__button {
+  display: inline-flex;
+  min-height: 4.25rem;
+  align-items: center;
+  gap: 0.9rem;
+  margin-top: 2.75rem;
+  padding: 0.9rem 2.2rem;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 1.05rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: border-color 220ms ease, background-color 220ms ease, transform 220ms ease;
+}
+
+.studio-contact__button:hover {
+  border-color: rgba(255, 255, 255, 0.72);
+  background: rgba(255, 255, 255, 0.08);
+  transform: translateY(-2px);
+}
+
+.studio-contact__button:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 4px;
+}
+
+.studio-contact__button svg {
+  width: 1.35rem;
+  height: 1.35rem;
+  flex: 0 0 auto;
+}
+
+@media (max-width: 639px) {
+  .studio-contact__inner {
+    min-height: 40rem;
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  .studio-contact__eyebrow {
+    margin-bottom: 4rem;
+  }
+
+  .studio-contact h2 {
+    max-width: 7ch;
+    font-size: clamp(4rem, 19vw, 6rem);
+    line-height: 0.86;
+  }
+
+  .studio-contact__copy {
+    margin-top: 2.75rem;
+    font-size: 1rem;
+  }
+
+  .studio-contact__button {
+    width: 100%;
+    justify-content: center;
+    margin-top: 2rem;
+  }
 }
 
 /* Case-study dialogs retain only the essential narrative after metadata is removed. */

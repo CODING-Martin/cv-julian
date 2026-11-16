@@ -1021,7 +1021,7 @@ const CircularCarousel = ({
           className="circular-carousel__frame cc-frame absolute left-0 top-0 w-full overflow-hidden"
           style={{ height: axis === 'x' ? size : cardH, borderRadius: frameRadius }}
         >
-          {item.media === 'video' ? (
+          {item.media === 'video' && index === active ? (
             <video
               className="circular-carousel__photo circular-carousel__video cc-photo pointer-events-none absolute block max-w-none select-none object-cover"
               src={item.src}
@@ -1030,14 +1030,14 @@ const CircularCarousel = ({
               muted
               loop
               playsInline
-              preload="metadata"
+              preload="auto"
               aria-hidden="true"
               style={photoStyle}
             />
           ) : (
             <img
               className="circular-carousel__photo cc-photo pointer-events-none absolute block max-w-none select-none object-cover [-webkit-user-drag:none]"
-              src={item.src}
+              src={item.media === 'video' ? item.poster ?? item.src : item.src}
               alt=""
               draggable={false}
               decoding="async"
