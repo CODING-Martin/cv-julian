@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
 import { createRoot as createClientRoot } from 'react-dom/client';
 import CircularCarousel, { type CircularCarouselItem } from './components/CircularCarousel';
+import FoldText from './components/FoldText';
 import './hero-carousel.css';
 
 const serviceMarqueeItems = [
@@ -90,11 +91,30 @@ function PhoneCarousel() {
 }
 
 function StudioHero() {
+  const heroTitle = 'Creación de contenido y edición audiovisual.';
+
   return (
     <div className="studio-hero">
       <div className="container-x studio-hero__layout">
         <section className="studio-hero__message" aria-labelledby="studio-hero-title">
-          <h1 id="studio-hero-title">Creación de contenido y edición audiovisual.</h1>
+          <h1 id="studio-hero-title">
+            <FoldText
+              text={heroTitle}
+              splitBy="char"
+              hinge="top"
+              foldStyle="paper"
+              duration={0.72}
+              stagger={0.032}
+              foldAngle={92}
+              perspective={700}
+              creaseShading={0.55}
+              trigger="mount"
+              fontSize="inherit"
+              fontWeight="inherit"
+              color="currentColor"
+              style={{ lineHeight: 'inherit', letterSpacing: 'inherit' }}
+            />
+          </h1>
           <p className="studio-hero__copy">
               Producción y edición de videos para marcas, emprendimientos y proyectos.
           </p>
@@ -226,7 +246,7 @@ type VideoPortfolioSlot = (typeof videoPortfolioSlots)[number];
 type ReadyVideoPortfolioSlot = Extract<VideoPortfolioSlot, { readonly src: string }>;
 
 function getPortfolioTitle(slot: VideoPortfolioSlot) {
-  return 'modalTitle' in slot ? slot.modalTitle : slot.title;
+  return slot.modalTitle;
 }
 
 function getPortfolioTitleSizeClass(slot: VideoPortfolioSlot) {
@@ -752,6 +772,92 @@ function removeContactGrid() {
   )?.parentElement?.style.setProperty('border-top', '0');
 }
 
+let sectionRevealObserver: IntersectionObserver | null = null;
+
+function getSectionRevealObserver() {
+  if (sectionRevealObserver || !('IntersectionObserver' in window)) return sectionRevealObserver;
+
+  sectionRevealObserver = new IntersectionObserver(entries => {
+    entries.forEach(entry => {
+      if (!entry.isIntersecting) return;
+
+      const target = entry.target as HTMLElement;
+      const section = target.classList.contains('motion-reveal-section')
+        ? target
+        : target.closest<HTMLElement>('.motion-reveal-section');
+
+      if (!section) return;
+
+      section.classList.add('motion-reveal-section--visible');
+      sectionRevealObserver?.unobserve(target);
+    });
+  }, {
+    threshold: 0.16,
+    rootMargin: '0px 0px -8% 0px'
+  });
+
+  return sectionRevealObserver;
+}
+
+function addRevealItem(element: HTMLElement | null | undefined, delay: number) {
+  if (!element) return;
+
+  element.classList.add('motion-reveal-item');
+  element.style.setProperty('--motion-reveal-delay', `${delay}ms`);
+}
+
+function observeRevealSection(
+  section: HTMLElement | null,
+  variant: 'portfolio' | 'contact',
+  trigger: HTMLElement | null = section
+) {
+  if (!section || section.dataset.motionRevealObserved) return;
+
+  section.dataset.motionRevealObserved = 'true';
+  section.classList.add('motion-reveal-section', `motion-reveal-section--${variant}`);
+
+  const revealObserver = getSectionRevealObserver();
+  if (!revealObserver || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    section.classList.add('motion-reveal-section--visible');
+    return;
+  }
+
+  revealObserver.observe(trigger ?? section);
+}
+
+function setupLightweightSectionReveals() {
+  const portfolioSection = document.querySelector<HTMLElement>('.portfolio-video-section');
+  const portfolioTitle = portfolioSection?.querySelector<HTMLHeadingElement>('.portfolio-video-section__intro h2');
+
+  if (portfolioSection && portfolioTitle) {
+    addRevealItem(portfolioTitle, 0);
+    observeRevealSection(portfolioSection, 'portfolio', portfolioTitle);
+  }
+
+  const contactTitle = Array.from(document.querySelectorAll<HTMLHeadingElement>('h1, h2')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR').startsWith('¿trabajamos juntos')
+  );
+  const contactSection = contactTitle?.closest<HTMLElement>('section');
+
+  if (!contactSection || !contactTitle) return;
+
+  const contactEyebrow = Array.from(contactSection.querySelectorAll<HTMLElement>('span')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR') === 'siguiente paso'
+  )?.parentElement;
+  const contactCopy = Array.from(contactSection.querySelectorAll<HTMLParagraphElement>('p')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR').startsWith('para consultas')
+  );
+  const contactButton = Array.from(contactSection.querySelectorAll<HTMLAnchorElement>('a')).find(element =>
+    element.textContent?.replace(/\s+/g, ' ').trim().toLocaleLowerCase('es-AR').includes('whatsapp directo')
+  );
+
+  addRevealItem(contactEyebrow, 0);
+  addRevealItem(contactTitle, 70);
+  addRevealItem(contactCopy, 140);
+  addRevealItem(contactButton, 210);
+  observeRevealSection(contactSection, 'contact', contactTitle);
+}
+
 function mountStandalonePage() {
   const root = document.getElementById('root');
   const hasLegacyHero = Array.from(document.querySelectorAll('h1')).some(element =>
@@ -777,6 +883,7 @@ const observer = new MutationObserver(() => {
   addCopyrightNotice();
   addContactQuestionMark();
   removeContactGrid();
+  setupLightweightSectionReveals();
   removeRetiredContent();
   removeProcessSection();
   removeImpactMetrics();
@@ -794,6 +901,7 @@ removeFooter();
 addCopyrightNotice();
 addContactQuestionMark();
 removeContactGrid();
+setupLightweightSectionReveals();
 removeRetiredContent();
 removeProcessSection();
 removeImpactMetrics();
