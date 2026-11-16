@@ -5,6 +5,11 @@ body {
   overflow-x: hidden;
 }
 
+/* Removes the unrelated builder badge injected by the original template. */
+#enter-badge {
+  display: none !important;
+}
+
 #root {
   width: 100%;
   max-width: 100%;
