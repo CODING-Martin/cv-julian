@@ -80,7 +80,6 @@ function PhoneCarousel() {
         fadeColor="#090909"
         innerShade={0.16}
         cornerRadius={32}
-        captions
       />
       <div className="hero-phone-carousel__status" aria-hidden="true">
         <i />
