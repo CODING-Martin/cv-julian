@@ -1,5 +1,4 @@
-# NUEVE Studio replica
-
+web marketing Juli
 Réplica local del sitio de referencia, incluyendo sus cuatro rutas, fotografías,
 tipografías, transiciones, filtros, modales y comportamiento responsive.
 
