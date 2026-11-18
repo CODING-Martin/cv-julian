@@ -5,6 +5,8 @@ import CircularCarousel, { type CircularCarouselItem } from './components/Circul
 import FoldText from './components/FoldText';
 import './hero-carousel.css';
 
+const factoresInstagram = '@ABALLAYAGUSTIN.RE';
+
 const serviceMarqueeItems = [
   'CONTENT CREATION',
   'VIDEO PRODUCTION',
@@ -42,7 +44,7 @@ const items: CircularCarouselItem[] = [
     src: '/videos/flipping-carousel.mp4',
     media: 'video',
     poster: '/posters/flipping-carousel-480.webp',
-    subtitle: '@FLIPPING',
+    subtitle: factoresInstagram,
     alt: 'Flipping — Contenido inmobiliario'
   },
   {
@@ -156,7 +158,7 @@ const videoPortfolioSlots = [
   {
     number: '03',
     client: 'Factores',
-    modalTitle: '@ABALLAYAGUSTIN.RE',
+    modalTitle: factoresInstagram,
     category: 'Inmobiliaria',
     title: 'Qué define el valor de una propiedad',
     description: 'Contenido educativo sobre el mercado inmobiliario y sus principales conceptos.',
@@ -180,7 +182,7 @@ const videoPortfolioSlots = [
   {
     number: '05',
     client: 'Flipping',
-    modalTitle: '@FLIPPING',
+    modalTitle: factoresInstagram,
     category: 'Inmobiliaria',
     title: 'Cómo funciona el flipping inmobiliario',
     description: 'Contenido informativo sobre inversiones y oportunidades inmobiliarias.',
@@ -228,7 +230,7 @@ const videoPortfolioSlots = [
   {
     number: '09',
     client: 'Ariel Martínez',
-    modalTitle: 'ARIELMARTINEZ.ARQ',
+    modalTitle: '@ARIELMARTINEZ.ARQ',
     category: 'Arquitectura',
     title: 'Instalaciones que definen una buena obra',
     description: 'Contenido profesional sobre arquitectura, instalaciones y mantenimiento de una vivienda.',
